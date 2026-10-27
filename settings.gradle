@@ -7,9 +7,9 @@ pluginManagement {
 
     plugins {
         id 'uk.gov.justice.service.laa.laa-spring-boot-gradle-plugin' version '3.1.3'
-        id 'io.freefair.lombok' version '9.8.0'
+        id 'io.freefair.lombok' version '9.8.2'
         id 'com.diffplug.spotless' version '8.10.4'
-        id 'io.sentry.jvm.gradle' version '6.23.0'
+        id 'io.sentry.jvm.gradle' version '6.24.0'
         id 'net.researchgate.release' version '3.2.0'
         id 'org.openapi.generator' version '7.26.0'
     }
@@ -17,4 +17,4 @@ pluginManagement {
 
 rootProject.name = 'laa-data-controlled-work-validator'
 
-include 'claims-validation-core', 'reference-fee-scheme-platform-api', 'reference-provider-details-api'
+include 'claims-validation-core', 'reference-fee-scheme-platform-api'

@@ -11,9 +11,38 @@ java {
     }
 }
 
-// Use Maven Central for resolving dependencies.
+// Prefer the package-read token for dependency resolution; publishing credentials are unchanged.
+// Locally, GITHUB_TOKEN is a fallback. The PAT needs read:packages and ministryofjustice access.
+def githubPackagesUsername = System.getenv('GITHUB_ACTOR')?.trim() ?: project.ext.gitHubPackagesUsername
+def githubPackagesPassword = System.getenv('GITHUB_PACKAGES_TOKEN')?.trim() ?: project.ext.gitHubPackagesPassword
+
+
+// Explicit fallbacks for private artifacts. The plugin's org-level GitHub Packages repository is
+// tried first; these group-scoped repositories avoid relying on it accepting a different repo path.
 repositories {
-    mavenCentral()
+    maven {
+        name = 'laaDataProviderData'
+        url = uri('https://maven.pkg.github.com/ministryofjustice/laa-data-provider-data')
+        credentials {
+            username = githubPackagesUsername
+            password = githubPackagesPassword
+        }
+        content {
+            includeGroup 'uk.gov.justice.laadata.providers'
+        }
+    }
+
+    maven {
+        name = 'laaDataClaimsApi'
+        url = uri('https://maven.pkg.github.com/ministryofjustice/laa-data-claims-api')
+        credentials {
+            username = githubPackagesUsername
+            password = githubPackagesPassword
+        }
+        content {
+            includeGroup 'uk.gov.justice.laa.datastewardship.payments'
+        }
+    }
 }
 
 java {
@@ -24,10 +53,9 @@ java {
 dependencies {
 
     implementation project(':reference-fee-scheme-platform-api')
-    implementation project(':reference-provider-details-api')
 
-    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.35.0'
-    //implementation 'uk.gov.justice.laadata.providers:providers-api:1.36.0'
+    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.22.10'
+    implementation 'uk.gov.justice.laadata.providers:providers-api:1.55.2'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -70,7 +98,7 @@ publishing {
     }
 }
 
-// disable for library module
+// This module publishes a library, not an executable Spring Boot application.
 tasks.named('bootJar') {
     enabled = false
 }
